@@ -1,0 +1,583 @@
+<!-- 
+FILE STRUCTURE
+
+index.html
+style.css
+script.js
+
+/assets
+  innovine-logo.png
+  background mushc.mp3
+  correct.mp3
+  wrong.mp3
+
+  bat.jpg
+  can.png
+  cat.jpg
+  chat.png
+  fan.png
+  fat.png
+  hat.png
+  man.png
+  mat.png
+  pan.png
+  pat.png
+  plan.png
+  ran.png
+  rat.png
+  sat.png
+  swan.png
+  tan.png
+  van.png
+
+-->
+
+<!-- ========================= index.html ========================= -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Word Family Train Adventure</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+
+<body>
+
+  <!-- Splash Screen -->
+  <div id="splashScreen">
+    <img src="assets/innovine-logo.png" alt="Innovine Logo" id="logo">
+  </div>
+
+  <!-- Main Game -->
+  <div id="gameContainer" class="hidden">
+
+    <!-- Instructions -->
+    <div id="instructionBar">
+      Drag and drop the word into the correct train.
+      Put -at words in the -at train.
+      Put -an words in the -an train.
+    </div>
+
+    <!-- Word Card -->
+    <div id="wordArea">
+      <div id="card" draggable="true">
+        <img id="wordImage" src="" alt="word image">
+        <div id="wordText"></div>
+      </div>
+    </div>
+
+    <!-- Trains -->
+    <div id="trainArea">
+
+      <!-- AT TRAIN -->
+      <div class="trainZone" id="atTrain" data-family="at">
+        <div class="trainTitle">🚂 -AT TRAIN</div>
+      </div>
+
+      <!-- AN TRAIN -->
+      <div class="trainZone" id="anTrain" data-family="an">
+        <div class="trainTitle">🚂 -AN TRAIN</div>
+      </div>
+
+    </div>
+
+    <!-- Feedback -->
+    <div id="feedback"></div>
+
+    <!-- End Screen -->
+    <div id="endScreen" class="hidden">
+      <h1>🎉 Great Job! 🎉</h1>
+      <button id="replayBtn">Replay Game</button>
+    </div>
+
+  </div>
+
+  <!-- Audio -->
+  <audio id="correctSound" src="assets/correct.mp3"></audio>
+  <audio id="wrongSound" src="assets/wrong.mp3"></audio>
+  <audio id="bgMusic" src="assets/background mushc.mp3" loop></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+<!-- ========================= style.css ========================= -->
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Arial, sans-serif;
+}
+
+body{
+  width:100vw;
+  height:100vh;
+  overflow:hidden;
+  background:linear-gradient(to bottom,#dff6ff,#fff7d6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.hidden{
+  display:none !important;
+}
+
+/* Splash Screen */
+
+#splashScreen{
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#ffffff;
+}
+
+#logo{
+  width:220px;
+  max-width:70vw;
+  animation:fadeIn 2s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+/* Main Game */
+
+#gameContainer{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:10px;
+}
+
+/* Instructions */
+
+#instructionBar{
+  width:100%;
+  background:#fff4c7;
+  border-radius:14px;
+  padding:10px;
+  text-align:center;
+  font-size:18px;
+  color:#333;
+  font-weight:bold;
+  line-height:1.4;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Word Area */
+
+#wordArea{
+  height:32%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+#card{
+  width:180px;
+  background:#ffffff;
+  border-radius:20px;
+  padding:12px;
+  text-align:center;
+  cursor:grab;
+  touch-action:none;
+  box-shadow:0 4px 8px rgba(0,0,0,0.15);
+}
+
+#card img{
+  width:100px;
+  height:100px;
+  object-fit:contain;
+}
+
+#wordText{
+  margin-top:10px;
+  font-size:32px;
+  font-weight:bold;
+  color:#444;
+}
+
+/* Train Area */
+
+#trainArea{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:15px;
+  height:40%;
+}
+
+.trainZone{
+  flex:1;
+  height:100%;
+  border-radius:25px;
+  border:5px dashed #888;
+  background:#ffffffcc;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+
+.trainTitle{
+  font-size:28px;
+  font-weight:bold;
+  color:#444;
+  text-align:center;
+  padding:10px;
+}
+
+/* Feedback */
+
+#feedback{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:120px;
+  pointer-events:none;
+  display:none;
+  z-index:100;
+}
+
+/* End Screen */
+
+#endScreen{
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,0.95);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:20px;
+}
+
+#endScreen h1{
+  color:#444;
+  font-size:48px;
+}
+
+#replayBtn{
+  padding:15px 30px;
+  border:none;
+  border-radius:15px;
+  background:#ffcc66;
+  font-size:24px;
+  cursor:pointer;
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+  #instructionBar{
+    font-size:14px;
+    padding:8px;
+  }
+
+  #card{
+    width:140px;
+  }
+
+  #card img{
+    width:80px;
+    height:80px;
+  }
+
+  #wordText{
+    font-size:26px;
+  }
+
+  .trainTitle{
+    font-size:20px;
+  }
+
+  #feedback{
+    font-size:90px;
+  }
+
+  #endScreen h1{
+    font-size:34px;
+  }
+
+  #replayBtn{
+    font-size:20px;
+  }
+}
+
+<!-- ========================= script.js ========================= -->
+
+const words = [
+  { word:"hat", family:"at", image:"assets/hat.png" },
+  { word:"fan", family:"an", image:"assets/fan.png" },
+  { word:"cat", family:"at", image:"assets/cat.jpg" },
+  { word:"pan", family:"an", image:"assets/pan.png" },
+  { word:"bat", family:"at", image:"assets/bat.jpg" },
+  { word:"van", family:"an", image:"assets/van.png" },
+  { word:"mat", family:"at", image:"assets/mat.png" },
+  { word:"man", family:"an", image:"assets/man.png" },
+  { word:"rat", family:"at", image:"assets/rat.png" },
+  { word:"can", family:"an", image:"assets/can.png" },
+  { word:"fat", family:"at", image:"assets/fat.png" },
+  { word:"tan", family:"an", image:"assets/tan.png" },
+  { word:"sat", family:"at", image:"assets/sat.png" },
+  { word:"ran", family:"an", image:"assets/ran.png" },
+  { word:"pat", family:"at", image:"assets/pat.png" },
+  { word:"plan", family:"an", image:"assets/plan.png" },
+  { word:"chat", family:"at", image:"assets/chat.png" },
+  { word:"swan", family:"an", image:"assets/swan.png" }
+];
+
+let currentIndex = 0;
+
+const splashScreen = document.getElementById("splashScreen");
+const gameContainer = document.getElementById("gameContainer");
+
+const card = document.getElementById("card");
+const wordImage = document.getElementById("wordImage");
+const wordText = document.getElementById("wordText");
+
+const atTrain = document.getElementById("atTrain");
+const anTrain = document.getElementById("anTrain");
+
+const feedback = document.getElementById("feedback");
+
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
+const bgMusic = document.getElementById("bgMusic");
+
+const replayBtn = document.getElementById("replayBtn");
+const endScreen = document.getElementById("endScreen");
+
+/* ========================= */
+/* START GAME */
+/* ========================= */
+
+window.onload = () => {
+
+  setTimeout(() => {
+
+    splashScreen.style.display = "none";
+    gameContainer.classList.remove("hidden");
+
+    speakInstructions();
+
+  }, 5000);
+
+};
+
+/* ========================= */
+/* SPEAK INSTRUCTIONS */
+/* ========================= */
+
+function speakInstructions(){
+
+  const instructions = `
+  Drag and drop the word into the correct train.
+  Put at words in the at train.
+  Put an words in the an train.
+  `;
+
+  const speech = new SpeechSynthesisUtterance(instructions);
+
+  speech.rate = 0.9;
+  speech.pitch = 1;
+
+  speech.onend = () => {
+
+    bgMusic.volume = 0.2;
+
+    bgMusic.play().catch(()=>{});
+
+    loadWord();
+  };
+
+  speechSynthesis.speak(speech);
+}
+
+/* ========================= */
+/* LOAD WORD */
+/* ========================= */
+
+function loadWord(){
+
+  if(currentIndex >= words.length){
+
+    endGame();
+    return;
+  }
+
+  const currentWord = words[currentIndex];
+
+  wordImage.src = currentWord.image;
+  wordText.textContent = currentWord.word;
+
+  speakWord(currentWord.word);
+}
+
+/* ========================= */
+/* SPEAK WORD */
+/* ========================= */
+
+function speakWord(word){
+
+  const speech = new SpeechSynthesisUtterance(word);
+
+  speech.rate = 0.8;
+  speech.pitch = 1;
+
+  speechSynthesis.speak(speech);
+}
+
+/* ========================= */
+/* DRAG EVENTS */
+/* ========================= */
+
+card.addEventListener("dragstart", (e)=>{
+
+  e.dataTransfer.setData("text/plain", words[currentIndex].family);
+});
+
+/* ========================= */
+/* TOUCH SUPPORT */
+/* ========================= */
+
+let activeDrop = null;
+
+card.addEventListener("touchstart", ()=>{
+
+  card.style.opacity = "0.7";
+});
+
+card.addEventListener("touchmove", (e)=>{
+
+  const touch = e.touches[0];
+
+  const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+
+  if(elem && elem.closest(".trainZone")){
+
+    activeDrop = elem.closest(".trainZone");
+  }
+});
+
+card.addEventListener("touchend", ()=>{
+
+  card.style.opacity = "1";
+
+  if(activeDrop){
+
+    checkAnswer(activeDrop.dataset.family);
+  }
+
+  activeDrop = null;
+});
+
+/* ========================= */
+/* TRAIN DROP EVENTS */
+/* ========================= */
+
+document.querySelectorAll(".trainZone").forEach(zone => {
+
+  zone.addEventListener("dragover", (e)=>{
+
+    e.preventDefault();
+  });
+
+  zone.addEventListener("drop", (e)=>{
+
+    e.preventDefault();
+
+    const selectedFamily = e.dataTransfer.getData("text/plain");
+
+    checkAnswer(zone.dataset.family);
+  });
+
+});
+
+/* ========================= */
+/* CHECK ANSWER */
+/* ========================= */
+
+function checkAnswer(selectedFamily){
+
+  const currentWord = words[currentIndex];
+
+  if(selectedFamily === currentWord.family){
+
+    correctSound.play();
+
+    showFeedback("👏");
+
+    currentIndex++;
+
+    setTimeout(loadWord,1200);
+
+  }else{
+
+    wrongSound.play();
+
+    showFeedback("❌");
+  }
+}
+
+/* ========================= */
+/* FEEDBACK */
+/* ========================= */
+
+function showFeedback(symbol){
+
+  feedback.style.display = "block";
+  feedback.textContent = symbol;
+
+  setTimeout(()=>{
+
+    feedback.style.display = "none";
+
+  },1000);
+}
+
+/* ========================= */
+/* END GAME */
+/* ========================= */
+
+function endGame(){
+
+  bgMusic.pause();
+
+  const speech = new SpeechSynthesisUtterance(
+    "Great job! You finished the game."
+  );
+
+  speechSynthesis.speak(speech);
+
+  endScreen.classList.remove("hidden");
+}
+
+/* ========================= */
+/* REPLAY */
+/* ========================= */
+
+replayBtn.addEventListener("click", ()=>{
+
+  currentIndex = 0;
+
+  endScreen.classList.add("hidden");
+
+  bgMusic.currentTime = 0;
+
+  loadWord();
+
+  bgMusic.play().catch(()=>{});
+});
